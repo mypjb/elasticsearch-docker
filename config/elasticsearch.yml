@@ -92,4 +92,4 @@ transport.tcp.port: 9300
 transport.tcp.compress: true
 
 #----------------------------------- X-Pack  -----------------------------------
-xpack.security.enabled: false
+#xpack.security.enabled: false
