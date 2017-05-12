@@ -10,28 +10,32 @@ ENV ES_GIT https://github.com/mypjb/elasticsearch-docker.git
 # es user
 ENV ES_USER es
 
-RUN yum update -y \
-	&& yum install -y net-tools wget
-ADD ../test/es.tar.gz
+ENV BIN_PATH /docker/bin
 
-#RUN wget $ES_URL -O es.tar.gz \
-RUN mkdir -p $ES_PATH \
+RUN yum update -y \
+	&& yum install -y net-tools wget git java-1.8.0-openjdk
+
+#COPY es.tar.gz /
+
+RUN wget $ES_URL -O es.tar.gz \
+#RUN git --help \
+	&& mkdir -p $ES_PATH \
 	&& tar xzf es.tar.gz -C $ES_PATH --strip-components=1 \
+	&& rm es.tar.gz \
 	&& cd $ES_PATH \
 	&& ln -s $ES_PATH/bin/elasticsearch /usr/local/bin \
-	&& git $ES_GIT es_git \
+	&& git clone $ES_GIT es_git \
 	&& cp es_git/config/* config \
 	&& rm -rf es_git 
 
 RUN useradd -d /home/$ES_USER -m $ES_USER \
 	&& echo "Aa123456" | passwd $ES_USER --stdin \
 	&& chown -R $ES_USER $ES_PATH \
-	&& echo "soft	nofile	65536" >> /etc/security/limits.conf \
-	&& echo "hard   nofile  65536" >> /etc/security/limits.conf \
-	&& echo "vm.max_map_count=262144" >> /etc/sysctl.conf \
-	&& sysctl -p
+#	&& echo "* soft	nofile	65536" >> /etc/security/limits.conf \
+#	&& echo "* hard   nofile  65536" >> /etc/security/limits.conf \
+	&& mkdir -p /storage/elasticsearch \
+	&& chown -R $ES_USER /storage/elasticsearch 
 
 EXPOSE 9200 9300
 
-CMD su $ES_USER -c "elasticsearch -d" ;
-
+CMD su $ES_USER -c "elasticsearch -d" ; /bin/bash ;
