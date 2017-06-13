@@ -36,6 +36,13 @@ RUN useradd -d /home/$ES_USER -m $ES_USER \
 	&& mkdir -p /storage/elasticsearch \
 	&& chown -R $ES_USER /storage/elasticsearch 
 
+EVN ES_NAME es_node
+
+EVN ES_CLUSTER_NAME es_cluster
+
 EXPOSE 9200 9300
 
-CMD su $ES_USER -c "elasticsearch -d" ; /bin/bash ;
+CMD sed -i "s/\$ES_NAME/$ES_NAME/" $ES_PATH/config/elasticsearch.yml \
+	sed -i "s/\$ES_CLUSTER_NAME/$ES_CLUSTER_NAME" $ES_PATH/config/elasticsearch.yml \
+	su $ES_USER -c "elasticsearch -d" ; \
+	/bin/bash ;

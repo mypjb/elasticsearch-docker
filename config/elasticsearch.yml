@@ -14,13 +14,13 @@
 #
 # Use a descriptive name for your cluster:
 #
-cluster.name: ESCluster
+cluster.name: $ES_CLUSTER_NAME
 #
 # ------------------------------------ Node ------------------------------------
 #
 # Use a descriptive name for the node:
 #
-node.name: search-1
+node.name: $ES_NAME
 #
 # Add custom attributes to the node:
 #
